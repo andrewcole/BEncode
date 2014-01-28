@@ -60,5 +60,11 @@
             Assert.IsInstanceOfType(t, result);
             return result;
         }
+
+        [Test, ExpectedException(typeof(FormatException))]
+        public void ThrowsFormatException()
+        {
+            BEncode.ReadText("q=");
+        }
     }
 }
