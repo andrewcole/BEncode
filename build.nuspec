@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Illallangi.BEncode</id>
+    <version>$version$</version>
+    <title>BEncode Library</title>
+    <authors>Illallangi Enterprises</authors>
+    <owners>Illallangi Enterprises</owners>
+    <projectUrl>http://illallangi.com</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A library for reading BEncoded files</description>
+    <copyright>Copyright 2014</copyright>
+    <tags>BEncode</tags>
+    <dependencies/>
+  </metadata>
+</package>
