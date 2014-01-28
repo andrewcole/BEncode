@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <NuGet Include="$(MSBuildProjectDirectory)\src\.nuget\nuget.exe" />
+    <Nunit Include="$(MSBuildProjectDirectory)\tools\nunit" />
     <SignTool Include="$(MSBuildProjectDirectory)\tools\winsdk\signtool.exe" />
   </ItemGroup>
 
@@ -52,7 +53,16 @@
     <MSBuild Projects="$(SourceDir)\Illallangi.BEncode.sln" Properties="Configuration=$(Configuration)" Targets="Rebuild" />
   </Target>
 
-  <Target Name="Copy" DependsOnTargets="Compile">
+  <Target Name="Test" DependsOnTargets="Compile">
+    <CreateItem Include="$(MSBuildProjectDirectory)\**\bin\$(Configuration)\*Tests.dll">
+      <Output TaskParameter="Include" ItemName="TestAssembly" />
+    </CreateItem>
+    <NUnit Assemblies="@(TestAssembly)"
+           ToolPath="@(Nunit)" />
+  </Target>
+
+
+  <Target Name="Copy" DependsOnTargets="Test">
     <Message Text="=========== Copy ===========" Importance="High" />
 
     <MakeDir Directories="$(BuildDir)\bin\lib" />
