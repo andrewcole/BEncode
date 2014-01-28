@@ -18,9 +18,14 @@
 
                 yield return new TestCaseData(@"4:spam", typeof(string)).Returns(@"spam");
                 yield return new TestCaseData(@"4:spamspam", typeof(string)).Returns(@"spam");
+
+                yield return new TestCaseData(@"le", typeof(List<dynamic>)).Returns(new List<dynamic>());
+
                 yield return new TestCaseData(@"12:spamspamspam", typeof(string)).Returns(@"spamspamspam");
 
                 yield return new TestCaseData(@"l4:spam4:eggse", typeof(List<dynamic>)).Returns(new List<dynamic> { "spam", "eggs" });
+
+                yield return new TestCaseData(@"de", typeof(Dictionary<string, dynamic>)).Returns(new Dictionary<string, dynamic>());
 
                 yield return new TestCaseData(@"d3:cow3:moo4:spam4:eggse", typeof(Dictionary<string, dynamic>))
                                         .Returns(
