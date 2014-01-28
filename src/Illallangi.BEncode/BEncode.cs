@@ -11,7 +11,7 @@
         {
             using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
             {
-                return BEncode.ReadStream(stream);
+                return BEncode.Read(stream);
             }
         }
 
@@ -19,21 +19,13 @@
         {
             using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
-                return BEncode.ReadStream(stream);
+                return BEncode.Read(stream);
             }
         }
 
-        private static dynamic ReadStream(Stream stream)
+        private static dynamic Read(Stream stream)
         {
-            using (var reader = new BinaryReader(stream))
-            {
-                return BEncode.Read(reader);
-            }
-        }
-
-        private static dynamic Read(BinaryReader reader)
-        {
-            switch (reader.ReadChar())
+            switch (stream.ReadChar())
             {
                 case '0':
                 case '1':
@@ -45,33 +37,33 @@
                 case '7':
                 case '8':
                 case '9':
-                    return BEncode.ReadString(reader);
+                    return BEncode.ReadString(stream);
                 case 'i':
-                    return BEncode.ReadInt(reader);
+                    return BEncode.ReadInt(stream);
                 case 'l':
-                    return BEncode.ReadList(reader);
+                    return BEncode.ReadList(stream);
                 case 'd':
-                    return BEncode.ReadDictionary(reader);
+                    return BEncode.ReadDictionary(stream);
                 default:
                     throw new FormatException();
             }
         }
 
-        private static string ReadString(BinaryReader reader)
+        private static string ReadString(Stream stream)
         {
             var sb = new StringBuilder();
-            reader.BaseStream.Seek(-1, SeekOrigin.Current);
-            var length = BEncode.ReadInt(reader, ':');
+            stream.Seek(-1, SeekOrigin.Current);
+            var length = BEncode.ReadInt(stream, ':');
             
             for (var i = 0; i < length; i++)
             {
-                sb.Append(reader.ReadChar());
+                sb.Append(stream.ReadChar());
             }
 
             return sb.ToString();
         }
 
-        private static int ReadInt(BinaryReader reader, char terminator = 'e')
+        private static int ReadInt(Stream stream, char terminator = 'e')
         {
             var sb = new StringBuilder();
             char? c = null;
@@ -83,45 +75,47 @@
                     sb.Append(c.Value);
                 }
 
-                c = reader.ReadChar();
+                c = stream.ReadChar();
             }
             while (terminator != c);
 
             return int.Parse(sb.ToString());
         }
 
-        private static IList<dynamic> ReadList(BinaryReader reader, char terminator = 'e')
+        private static IList<dynamic> ReadList(Stream stream, char terminator = 'e')
         {
             var result = new List<dynamic>();
 
-            if (terminator == reader.PeekChar())
+            if (terminator == stream.PeekChar())
             {
                 return result;
             }
 
             do
             {
-                result.Add(BEncode.Read(reader));
+                result.Add(BEncode.Read(stream));
             }
-            while (terminator != reader.PeekChar());
+            while (terminator != stream.PeekChar());
+            stream.ReadChar();
 
             return result;
         }
 
-        private static IDictionary<string, dynamic> ReadDictionary(BinaryReader reader, char terminator = 'e')
+        private static IDictionary<string, dynamic> ReadDictionary(Stream stream, char terminator = 'e')
         {
             var result = new Dictionary<string, dynamic>();
 
-            if (terminator == reader.PeekChar())
+            if (terminator == stream.PeekChar())
             {
                 return result;
             }
 
             do
             {
-                result.Add(BEncode.Read(reader), BEncode.Read(reader));
+                result.Add(BEncode.Read(stream), BEncode.Read(stream));
             }
-            while (terminator != reader.PeekChar());
+            while (terminator != stream.PeekChar());
+            stream.ReadChar();
 
             return result;
         }

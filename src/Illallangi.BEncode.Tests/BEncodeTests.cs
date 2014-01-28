@@ -50,6 +50,14 @@
                                                     { "publisher-webpage", "www.example.com" },
                                                     { "publisher.location", "home" },
                                                 });
+
+                yield return new TestCaseData(@"lli0ei0eeli0ei0eee", typeof(List<dynamic>))
+                                        .Returns(
+                                            new List<dynamic>
+                                                {
+                                                    new List<dynamic> { 0, 0 }, 
+                                                    new List<dynamic> { 0, 0 },
+                                                });
             }
         }
 
@@ -65,6 +73,13 @@
         public void ThrowsFormatException()
         {
             BEncode.ReadText("q=");
+        }
+
+        [Test, Ignore]
+        public void ReadResumeDat()
+        {
+            var x = BEncode.ReadFile(
+                @"D:\working\illallangi-ps\UTorrent\src\Illallangi.UTorrent.PowerShell\bin\Debug\resume.dat");
         }
     }
 }
