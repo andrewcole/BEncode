@@ -54,6 +54,8 @@
   </Target>
 
   <Target Name="Test" DependsOnTargets="Compile">
+    <Message Text="=========== Test ===========" Importance="High" />
+
     <CreateItem Include="$(MSBuildProjectDirectory)\**\bin\$(Configuration)\*Tests.dll">
       <Output TaskParameter="Include" ItemName="TestAssembly" />
     </CreateItem>
